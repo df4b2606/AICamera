@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "664163087662",
+    "project_id": "aicamera-c908c",
+    "storage_bucket": "aicamera-c908c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664163087662:android:92b0410a6f325e5a24b6bf",
+        "android_client_info": {
+          "package_name": "com.example.aicameranew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHZhV7XROAPRMUXzvsM-uMI9txS5CADgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

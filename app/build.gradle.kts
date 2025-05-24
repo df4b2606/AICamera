@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
+    id("com.google.gms.google-services")
+
+
 }
 
 android {
@@ -48,6 +52,17 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
+    // Add the dependency for the Firebase AI Logic library. When using the BoM,
+    // you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-ai")
+    implementation(libs.firebase.common.ktx)
+    implementation(libs.firebase.ai)
+    implementation(libs.generativeai)
 
     val camerax_version = "1.4.2"
 
