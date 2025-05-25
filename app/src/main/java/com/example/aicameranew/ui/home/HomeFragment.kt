@@ -133,6 +133,9 @@ class HomeFragment : Fragment() {
         cameraExecutor.shutdown()
     }
 
+
+
+
     private suspend fun uploadPhotoToGemini(photoFile: File, inputText: String){
         val bitmap=BitmapFactory.decodeFile(photoFile.absolutePath)
         val model = Firebase.ai(backend = GenerativeBackend.googleAI())

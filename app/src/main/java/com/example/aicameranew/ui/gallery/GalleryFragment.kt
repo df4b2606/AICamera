@@ -35,6 +35,14 @@ class GalleryFragment : Fragment() {
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.addPrompt.setOnClickListener {
+            PromptDialogFragment {}  // 空 lambda，不做保存
+                .show(parentFragmentManager, "prompt_dialog")
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
