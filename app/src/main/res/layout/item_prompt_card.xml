@@ -1,15 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="6dp"
     android:elevation="4dp"
-    android:padding="16dp">
+    app:cardCornerRadius="8dp"
+    app:cardBackgroundColor="@android:color/white"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
-    <TextView
-        android:id="@+id/text_prompt"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Prompt内容" />
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- 顶部标题区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+
+
+            <!-- 标题文字 -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Prompt"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorPrimary"
+                android:fontFamily="sans-serif-medium" />
+
+
+
+        </LinearLayout>
+
+        <!-- Prompt 内容 -->
+        <TextView
+            android:id="@+id/text_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="这里显示 Prompt 的具体内容，支持多行文本显示"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:lineSpacingExtra="2dp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="10dp"
+            android:maxLines="3"
+            android:ellipsize="end" />
+
+        <!-- 底部操作区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <!-- 字符数统计 -->
+            <TextView
+                android:id="@+id/text_char_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="128 字符"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginEnd="12dp"
+                android:gravity="center_vertical" />
+
+
+
+            <!-- 删除按钮 -->
+            <ImageView
+                android:id="@+id/btn_delete"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/baseline_delete_forever_24"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </androidx.cardview.widget.CardView>

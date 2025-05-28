@@ -52,12 +52,11 @@ class HomeFragment : Fragment() {
 
     //Instance of CameraX
     private var imageCapture: ImageCapture? = null
+
     //Camera Facing
     private var lensFacing = CameraSelector.LENS_FACING_BACK
 
     private val selectedPromptViewModel by activityViewModels<SelectedPromptViewModel>()
-
-
 
 
     //Thread to execute the photo taking
@@ -77,10 +76,15 @@ class HomeFragment : Fragment() {
 
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_GRANTED) {
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             startCamera()
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), 10)
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.CAMERA),
+                10
+            )
         }
 
 
@@ -98,13 +102,12 @@ class HomeFragment : Fragment() {
             startCamera()  // Restart the camera
         }
 
-        binding.fab.setOnClickListener{
+        binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_nav_home_to_nav_gallery)
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
-
 
 
     private fun startCamera() {
@@ -133,8 +136,13 @@ class HomeFragment : Fragment() {
 
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
-        val photoFile = File(requireContext().externalMediaDirs.first(),
-            SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US).format(System.currentTimeMillis()) + ".jpg")
+        val photoFile = File(
+            requireContext().externalMediaDirs.first(),
+            SimpleDateFormat(
+                "yyyy-MM-dd-HH-mm-ss-SSS",
+                Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
@@ -143,7 +151,11 @@ class HomeFragment : Fragment() {
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Toast.makeText(requireContext(), "Photo saved: ${photoFile.absolutePath}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Photo saved: ${photoFile.absolutePath}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     lifecycleScope.launch {
                         val currentPrompt = selectedPromptViewModel.selectedPrompt.value
                         val textToSend = currentPrompt?.text ?: "Please help me describe this scene"
@@ -152,7 +164,11 @@ class HomeFragment : Fragment() {
                 }
 
                 override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(requireContext(), "Capture failed: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Capture failed: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )
@@ -165,26 +181,30 @@ class HomeFragment : Fragment() {
     }
 
 
+    private suspend fun uploadPhotoToGemini(photoFile: File, inputText: String) {
+        try {
+            val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+            if (bitmap == null) {
+                Toast.makeText(requireContext(), "Image decode failed", Toast.LENGTH_SHORT).show()
+                return
+            }
 
+            val model = Firebase.ai(backend = GenerativeBackend.googleAI())
+                .generativeModel("gemini-2.0-flash")
 
-    private suspend fun uploadPhotoToGemini(photoFile: File, inputText: String){
-        val bitmap=BitmapFactory.decodeFile(photoFile.absolutePath)
-        val model = Firebase.ai(backend = GenerativeBackend.googleAI())
-            .generativeModel("gemini-2.0-flash")
-        // Provide a prompt that includes the image specified above and text
-        val prompt = content {
-            image(bitmap)
-            text(inputText)
+            val prompt = content {
+                image(bitmap)
+                text(inputText)
+            }
+
+            val response = model.generateContent(prompt)
+            val result = response.text ?: "Didn't get any response"
+
+            Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
         }
-
-// To generate text output, call generateContent with the prompt
-        val response = model.generateContent(prompt)
-        val result = response.text ?: "Didn't get any response"
-
-        // 在手机上显示结果
-        Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
-
-//
-
     }
 }
