@@ -27,7 +27,11 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.aicameranew.R
+import com.example.aicameranew.viewmodel.SelectedPromptViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
@@ -47,6 +51,14 @@ class HomeFragment : Fragment() {
 
     //Instance of CameraX
     private var imageCapture: ImageCapture? = null
+    //Camera Facing
+    private var lensFacing = CameraSelector.LENS_FACING_BACK
+
+    private val selectedPromptViewModel by activityViewModels<SelectedPromptViewModel>()
+
+
+
+
     //Thread to execute the photo taking
     private lateinit var cameraExecutor: ExecutorService
 
@@ -69,8 +81,23 @@ class HomeFragment : Fragment() {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), 10)
         }
 
+
+
         binding.buttonCapture.setOnClickListener {
             takePhoto()
+        }
+
+        binding.turnCamera.setOnClickListener {
+            lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK) {
+                CameraSelector.LENS_FACING_FRONT
+            } else {
+                CameraSelector.LENS_FACING_BACK
+            }
+            startCamera()  // Restart the camera
+        }
+
+        binding.fab.setOnClickListener{
+            findNavController().navigate(R.id.action_nav_home_to_nav_gallery)
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -116,7 +143,9 @@ class HomeFragment : Fragment() {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     Toast.makeText(requireContext(), "Photo saved: ${photoFile.absolutePath}", Toast.LENGTH_SHORT).show()
                     lifecycleScope.launch {
-                        uploadPhotoToGemini(photoFile, "请描述这张图片的内容")
+                        val currentPrompt = selectedPromptViewModel.selectedPrompt.value
+                        val textToSend = currentPrompt?.text ?: "Please help me describe this scene"
+                        uploadPhotoToGemini(photoFile, textToSend)
                     }
                 }
 
@@ -143,12 +172,12 @@ class HomeFragment : Fragment() {
         // Provide a prompt that includes the image specified above and text
         val prompt = content {
             image(bitmap)
-            text("描述一下这个场景")
+            text(inputText)
         }
 
 // To generate text output, call generateContent with the prompt
         val response = model.generateContent(prompt)
-        val result = response.text ?: "没有获取到回答"
+        val result = response.text ?: "Didn't get any response"
 
         // 在手机上显示结果
         Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
