@@ -7,47 +7,78 @@
     tools:context=".ui.gallery.GalleryFragment">
 
     <TextView
-        android:id="@+id/text_gallery"
-        android:layout_width="match_parent"
+        android:id="@+id/text_sort_info"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Sorted by: Time (Tap to change)"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/prompt_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:padding="16dp"
-        tools:listitem="@layout/item_prompt_card"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:srcCompat="@drawable/baseline_add_a_photo_24"
-        android:scaleType="center"
-        app:maxImageSize="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_sort_info"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_group_container" app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp" />
+        tools:listitem="@layout/item_prompt_card" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_prompt"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginEnd="16dp"
+    <LinearLayout
+        android:id="@+id/fab_group_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        app:srcCompat="@drawable/baseline_add_24"
-        android:scaleType="center"
-        app:maxImageSize="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fab" />
+        app:layout_constraintEnd_toEndOf="parent" >
+
+        <ImageButton
+            android:id="@+id/add_prompt"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="16dp"
+            app:srcCompat="@drawable/baseline_add_24"
+            android:scaleType="center"
+            android:contentDescription="Add New Prompt" android:background="?attr/selectableItemBackgroundBorderless" android:padding="16dp" />
+
+        <ImageButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" app:srcCompat="@drawable/ic_menu_camera"
+            android:scaleType="center"
+            android:contentDescription="Take Photo" android:background="?attr/selectableItemBackgroundBorderless" android:padding="16dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/checkbox_group_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="24dp" app:layout_constraintBottom_toBottomOf="parent"  app:layout_constraintStart_toStartOf="parent">
+
+        <CheckBox
+            android:id="@+id/checkbox_geolocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Geolocation Tagging"
+            android:buttonTint="@color/checkbox_tint_color" />
+
+        <CheckBox
+            android:id="@+id/checkbox_sensor_assistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sensor Assistance"
+            android:layout_marginTop="8dp"
+            android:buttonTint="@color/checkbox_tint_color" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

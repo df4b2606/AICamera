@@ -27,8 +27,6 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="8dp">
 
-
-
             <!-- 标题文字 -->
             <TextView
                 android:layout_width="0dp"
@@ -38,9 +36,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
-                android:fontFamily="sans-serif-medium" />
-
-
+                android:fontFamily="@font/exo2" />
 
         </LinearLayout>
 
@@ -53,7 +49,7 @@
             android:textSize="16sp"
             android:textColor="@android:color/black"
             android:lineSpacingExtra="2dp"
-            android:fontFamily="sans-serif"
+            android:fontFamily="@font/exo2"
             android:layout_marginBottom="10dp"
             android:maxLines="3"
             android:ellipsize="end" />
@@ -65,18 +61,18 @@
             android:orientation="horizontal"
             android:gravity="end">
 
-            <!-- 字符数统计 -->
+
+
             <TextView
-                android:id="@+id/text_char_count"
+                android:id="@+id/text_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="128 字符"
                 android:textSize="12sp"
                 android:textColor="@android:color/darker_gray"
                 android:layout_marginEnd="12dp"
-                android:gravity="center_vertical" />
-
-
+                android:gravity="center_vertical"
+                android:fontFamily="@font/exo2" />
 
             <!-- 删除按钮 -->
             <ImageView
@@ -87,9 +83,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="4dp"
-                />
-
+                android:padding="4dp" />
         </LinearLayout>
 
     </LinearLayout>

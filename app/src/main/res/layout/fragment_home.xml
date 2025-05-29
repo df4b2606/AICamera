@@ -15,7 +15,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 拍照按钮 -->
+    <TextView
+        android:id="@+id/current_prompt_display"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="#80000000"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/exo2"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:shadowColor="#FF00FFFF"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1.5"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Current Prompt: Describe the scene in a futuristic style." />
+
+
+    <!-- Button for taking photo-->
     <ImageButton
         android:id="@+id/buttonCapture"
         android:layout_width="80dp"
@@ -70,13 +95,13 @@
 
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/setting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/ic_settings"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/setting"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="@dimen/fab_margin"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        app:srcCompat="@drawable/ic_settings"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

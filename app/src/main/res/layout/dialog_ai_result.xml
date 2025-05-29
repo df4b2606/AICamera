@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_purple">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:layout_weight="1"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="3dp"
+        app:cardBackgroundColor="@color/white">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/text_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AI Analysis Result"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp" />
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 固定按钮区域 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="16dp"
+        android:minHeight="48dp">
+
+        <ImageButton
+            android:id="@+id/btn_exit"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="Retake Photo"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/baseline_delete_forever_24"
+            android:padding="8dp"
+            android:scaleType="fitCenter" />
+
+        <ImageButton
+            android:id="@+id/btn_retake"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:contentDescription="Exit Dialog"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/baseline_autorenew_24"
+            android:padding="8dp"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+</LinearLayout>

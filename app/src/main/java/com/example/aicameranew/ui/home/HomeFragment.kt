@@ -1,14 +1,11 @@
 package com.example.aicameranew.ui.home
-import android.graphics.BitmapFactory
 
+import android.graphics.BitmapFactory
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-
-
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.content
 import android.widget.TextView
@@ -21,7 +18,11 @@ import com.example.aicameranew.databinding.FragmentHomeBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import android.Manifest
+import android.app.AlertDialog
 import android.util.Log
+import android.view.Gravity
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCaptureException
@@ -31,9 +32,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.aicameranew.R
+import com.example.aicameranew.data.Prompt
 import com.example.aicameranew.viewmodel.SelectedPromptViewModel
 import com.google.firebase.Firebase
-import com.google.firebase.FirebaseApp
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
 import kotlinx.coroutines.launch
@@ -56,8 +57,10 @@ class HomeFragment : Fragment() {
     //Camera Facing
     private var lensFacing = CameraSelector.LENS_FACING_BACK
 
-    private val selectedPromptViewModel by activityViewModels<SelectedPromptViewModel>()
+    val selectedPromptViewModel by activityViewModels<SelectedPromptViewModel>()
 
+    // ADD THIS PROPERTY: To keep a reference to the currently shown dialog
+    private var aiResultDialog: AlertDialog? = null
 
     //Thread to execute the photo taking
     private lateinit var cameraExecutor: ExecutorService
@@ -73,7 +76,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val currentPrompt = selectedPromptViewModel.selectedPrompt.value
 
+        binding.currentPromptDisplay.text = " Current Prompt: ${currentPrompt?.text ?: "No prompt selected"}"
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED
@@ -87,10 +92,8 @@ class HomeFragment : Fragment() {
             )
         }
 
-
-
         binding.buttonCapture.setOnClickListener {
-            takePhoto()
+            takePhoto(currentPrompt)
         }
 
         binding.turnCamera.setOnClickListener {
@@ -121,7 +124,11 @@ class HomeFragment : Fragment() {
 
             imageCapture = ImageCapture.Builder().build()
 
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            // FIX: Use CameraSelector.Builder to explicitly request the lens facing
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(lensFacing) // This ensures the desired lens is selected
+                .build()
+
 
             try {
                 cameraProvider.unbindAll()
@@ -134,8 +141,11 @@ class HomeFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun takePhoto() {
+    private fun takePhoto(currentPrompt: Prompt? = null) {
         val imageCapture = imageCapture ?: return
+        (currentPrompt?.frequency?:0)+1
+
+
         val photoFile = File(
             requireContext().externalMediaDirs.first(),
             SimpleDateFormat(
@@ -157,7 +167,6 @@ class HomeFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                     lifecycleScope.launch {
-                        val currentPrompt = selectedPromptViewModel.selectedPrompt.value
                         val textToSend = currentPrompt?.text ?: "Please help me describe this scene"
                         uploadPhotoToGemini(photoFile, textToSend)
                     }
@@ -176,6 +185,9 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Dismiss the dialog if it's still showing to prevent window leaks
+        aiResultDialog?.dismiss()
+        aiResultDialog = null // Clear the reference
         _binding = null
         cameraExecutor.shutdown()
     }
@@ -200,7 +212,65 @@ class HomeFragment : Fragment() {
             val response = model.generateContent(prompt)
             val result = response.text ?: "Didn't get any response"
 
-            Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
+            requireActivity().runOnUiThread {
+                // Dismiss any previously shown dialog
+                aiResultDialog?.dismiss()
+                aiResultDialog = null // Clear the reference
+
+                // 1. 加载自定义布局
+                val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_ai_result, null)
+
+                // 2. 设置分析文本内容
+                val resultTextView = dialogView.findViewById<TextView>(R.id.text_result)
+                resultTextView.text = result  // result 是你的分析结果字符串
+
+                // 3. 创建 AlertDialog 并设置自定义视图
+                val dialog = AlertDialog.Builder(requireContext())
+                    .setView(dialogView)
+                    .create()
+
+                // 4. 显示弹窗
+                dialog.show()
+
+                // IMPORTANT: Store the reference to the newly shown dialog
+                aiResultDialog = dialog
+
+                // 5. 设置弹窗尺寸和偏移
+                val displayMetrics = resources.displayMetrics
+                val screenWidth = displayMetrics.widthPixels
+                val screenHeight = displayMetrics.heightPixels
+
+                val width = (screenWidth * 0.93).toInt()
+                val height = (screenHeight * 0.75).toInt()
+
+                dialog.window?.apply {
+                    setLayout(width, height)
+                    val params = attributes
+                    params.gravity = Gravity.CENTER
+                    params.y = -60 // 向上偏移一点
+                    attributes = params
+                }
+
+                // 6. 设置按钮点击逻辑
+                // Note: It's good practice to ensure these IDs exist in your dialog_ai_result.xml
+                dialogView.findViewById<ImageButton>(R.id.btn_retake).setOnClickListener {
+                    takePhoto() // 调用你已有的拍照函数
+                    dialog.dismiss()
+                    aiResultDialog = null // Clear reference when dismissed
+
+                }
+
+                dialogView.findViewById<ImageButton>(R.id.btn_exit).setOnClickListener {
+                    dialog.dismiss()
+                    aiResultDialog = null // Clear reference when dismissed
+                    Toast.makeText(requireContext(), "Exited", Toast.LENGTH_SHORT).show()
+                    // 也可以选择 navigateUp()、requireActivity().finish() 等
+
+                }
+            }
+
+            // You might want to remove this Toast if the dialog is the primary display of result
+            // Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
 
         } catch (e: Exception) {
             e.printStackTrace()

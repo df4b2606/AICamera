@@ -40,10 +40,6 @@ class GalleryFragment : Fragment() {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textGallery
-        galleryViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 
@@ -53,12 +49,19 @@ class GalleryFragment : Fragment() {
         //Initialize the RecyclerView
         //TODO: Change later time/frequency
         val initialPrompts=promptRepository.getPromptsByTime()
-        promptAdapter = PromptAdapter(initialPrompts){
-                clickedPrompt ->
-            currentPrompt = clickedPrompt
-            selectedPromptViewModel.selectPrompt(clickedPrompt)
-            Toast.makeText(requireContext(), " Prompt Selected: ${clickedPrompt.text}", Toast.LENGTH_SHORT).show()
-        }
+        promptAdapter = PromptAdapter(
+            initialPrompts,
+            onItemClick = { clickedPrompt ->
+                currentPrompt = clickedPrompt
+                selectedPromptViewModel.selectPrompt(clickedPrompt)
+                Toast.makeText(requireContext(), "Prompt Selected: ${clickedPrompt.text}", Toast.LENGTH_SHORT).show()
+            },
+            onDeleteClick = { promptToDelete ->
+                promptRepository.deletePrompt(promptToDelete)
+                val updatedList = promptRepository.getPromptsByTime()
+                promptAdapter.updateData(updatedList)
+            }
+        )
         binding.promptList.adapter = promptAdapter
         binding.promptList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
 
@@ -74,6 +77,8 @@ class GalleryFragment : Fragment() {
             }  //show the prompt input dialog
                 .show(parentFragmentManager, "prompt_dialog")
         }
+
+
     }
 
     override fun onDestroyView() {

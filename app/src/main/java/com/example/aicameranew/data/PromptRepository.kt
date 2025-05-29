@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 //Prompt data class
-data class Prompt(val text:String, val timestamp: Long=System.currentTimeMillis(),val frequency:Int=1)
+data class Prompt(val text:String, val timestamp: Long=System.currentTimeMillis(),var frequency:Int=1)
 
 class PromptRepository(context: Context) {
 

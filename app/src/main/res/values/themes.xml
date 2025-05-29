@@ -2,7 +2,7 @@
     <!-- Material 3 base theme -->
     <style name="Theme.AICameraNew.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color -->
-        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
 
         <!-- Secondary brand color -->
