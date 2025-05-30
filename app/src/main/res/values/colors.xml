@@ -10,4 +10,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="checkbox_tint_color">#FF00FF</color>
+    <!-- res/values/colors.xml -->
+    <color name="selected_prompt_bg">#F0F0F0</color>
+
 </resources>

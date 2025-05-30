@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.firebase.common.ktx)
     implementation(libs.firebase.ai)
     implementation(libs.generativeai)
+    implementation(libs.play.services.location)
 
     val camerax_version = "1.4.2"
 
